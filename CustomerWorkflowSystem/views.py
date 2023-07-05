@@ -9,12 +9,13 @@ import os
 
 def capture_customer_info(request):
     if request.method == 'POST':
-        form = CustomerForm(request.POST, request.FILES)
-        if form.is_valid():
+        form = CustomerForm(request.POST)
+        file_form = UploadFileForm(request.POST, request.FILES)
+        if form.is_valid() and file_form.is_valid():
             customer = form.save()
             
             # Save the uploaded Excel file to the 'media' directory
-            uploaded_file = request.FILES['financial_data']
+            uploaded_file = file_form.cleaned_data['file']
             file_dir = 'media/financial_data_files/'
             file_path = '{}{}_{}.xlsx'.format(file_dir, customer.first_name, customer.last_name)
             
@@ -36,11 +37,13 @@ def capture_customer_info(request):
                     expenses=row['Expenses']
                 )
             
-        return redirect('render_temporal_graph', customer_id=customer.id)
+            return redirect('render_temporal_graph', customer_id=customer.id)
     
     else:
         form = CustomerForm()
-    return render(request, 'CustomerWorkflowSystem/capture_customer.html', {'customer_form': form})
+        file_form = UploadFileForm()
+
+    return render(request, 'CustomerWorkflowSystem/capture_customer.html', {'customer_form': form, 'file_form': file_form})
 
 
 def upload_file(request):
@@ -70,15 +73,24 @@ def render_temporal_graph(request, customer_id):
 
     # Sort DataFrame by 'month'
     df.sort_values(by='month', inplace=True)
+    
 
     # Plotting
     plt.figure(figsize=(10, 6))
-    plt.plot(df['month'], df['income'], label='Income')
-    plt.plot(df['month'], df['expenses'], label='Expenses')
+    plt.bar(df['month'], df['income'], label='Income')
+    plt.bar(df['month'], df['expenses'], label='Expenses')
     plt.xlabel('Month')
     plt.ylabel('Amount')
     plt.title('Income and Expenses Over Time')
     plt.legend()
-    plt.savefig(os.path.join(settings.STATIC_ROOT, 'images/temporal_graph.png'))
+
+    # Specify the path to the static directory in your app
+    app_static_dir = os.path.join(settings.BASE_DIR, 'CustomerWorkflowSystem', 'static', 'img')
+
+    # Ensure the directory exists
+    os.makedirs(app_static_dir, exist_ok=True)
+
+    # Save the plot
+    plt.savefig(os.path.join(app_static_dir, 'temporal_graph.png'))
 
     return render(request, 'CustomerWorkflowSystem/render_temporal_graph.html', {'customer': customer})

@@ -8,13 +8,40 @@
 </head>
 
 <body>
-    <div class="container">
-        <h1>Capture Customer Information</h1>
-        <form method="post" enctype="multipart/form-data">
-            {% csrf_token %} {{ customer_form.as_p }}
-            <input type="file" name="financial_data">
-            <input type="submit" value="Submit">
-        </form>
+    <div class="container m-6 mt-4 pt-2">
+
+
+        <h1 class="text-center mb-5">WEB BASED WORKFLOW SYSTEM</h1>
+        <div class="card" style="margin-left: 2rem; margin-right: 2rem;">
+            <div class="card-body py-3" style="margin-left: 2rem; margin-right: 2rem;">
+                <form method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    <!-- Loop over each form field -->
+                    <h2 class="text-center">Customer Information</h2>
+                    {% for field in customer_form %}
+                    <div class="form-group">
+                        <!-- Display the field's label -->
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <!-- Use a different input depending on the field type -->
+                        {% if field.field.widget.input_type == 'textarea' %}
+                        <textarea name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}">{{ field.value|default_if_none:"" }}</textarea> {% else %}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:" " }}"> {% endif %}
+                    </div>
+                    {% endfor %}
+                    <h2>Upload Financial Data</h2>
+                    {% for field in file_form %}
+                    <div class="form-group">
+                        <!-- Display the field's label -->
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        <!-- Use a different input depending on the field type -->
+                        {% if field.field.widget.input_type == 'file' %}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" id="{{ field.id_for_label }}"> {% endif %}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </div>
 
     </div>
 </body>

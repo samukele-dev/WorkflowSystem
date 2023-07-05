@@ -8,10 +8,14 @@
 
 <body>
     <div class="container">
-        <h1>Temporal Graph</h1>
-        <h2>Customer: {{ customer }}</h2>
-        <!-- Render the temporal graph using the financial_data -->
-        <img src="{% static 'images/temporal_graph.png' %}" alt="Temporal Graph">
+        <div class="card" style="margin-left: 2rem; margin-right: 2rem;">
+            <div class="card-body" style="margin-left: 2rem; margin-right: 2rem;">
+                <h1 class="text-center">Temporal Graph</h1>
+                <h2 class="text-center">Customer: {{ customer }}</h2>
+                <!-- Render the temporal graph using the financial_data -->
+            </div>
+        </div>
+        <img src="{% static 'img/temporal_graph.png' %}" alt="Temporal Graph">
 
     </div>
 </body>
