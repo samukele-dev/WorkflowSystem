@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Capture Customer Information</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Capture Customer Information</h1>
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %} {{ customer_form.as_p }} {{ financial_data_form.as_p }}
+            <input type="submit" value="Submit" class="btn btn-primary">
+        </form>
+    </div>
+</body>
+
+</html>

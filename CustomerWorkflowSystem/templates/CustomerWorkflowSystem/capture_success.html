@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Capture Success</title>
+    <!-- Include Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <h1>Success!</h1>
+        <p>Customer information captured successfully:</p>
+        <p>First Name: {{ customer.first_name }}</p>
+        <p>Last Name: {{ customer.last_name }}</p>
+        <p>Date of Birth: {{ customer.date_of_birth }}</p>
+        <a href="{% url 'temporal_graph' customer_id=customer.id %}" class="btn btn-primary">View Temporal Graph</a>
+    </div>
+</body>
+
+</html>
