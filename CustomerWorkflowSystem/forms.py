@@ -15,4 +15,4 @@ class UploadFileForm(forms.Form):
 class FinancialDataForm(forms.ModelForm):
     class Meta:
         model = FinancialData
-        fields = ['date', 'income', 'expenditure']  # Replace these with the actual field names
+        fields = ['month', 'income', 'expenses']  # Replace these with the actual field names
