@@ -2,6 +2,10 @@ from django.shortcuts import render, redirect
 from .forms import CustomerForm, FinancialDataForm
 from .models import Customer, FinancialData
 
+from django.shortcuts import render, redirect
+from .forms import CustomerForm, FinancialDataForm
+from .models import Customer, FinancialData
+
 def capture_customer_info(request):
     if request.method == 'POST':
         customer_form = CustomerForm(request.POST)
@@ -15,4 +19,9 @@ def capture_customer_info(request):
     else:
         customer_form = CustomerForm()
         financial_data_form = FinancialDataForm()
-    return render(request, 'workflow/capture_customer.html', {'customer_form': customer_form, 'financial_data_form': financial_data_form})
+    return render(request, 'CustomerWorkflowSystem/capture_customer.html', {'customer_form': customer_form, 'financial_data_form': financial_data_form})
+
+def render_temporal_graph(request, customer_id):
+    customer = Customer.objects.get(id=customer_id)
+    financial_data = FinancialData.objects.filter(customer=customer)
+    return render(request, 'CustomerWorkflowSystem/render_temporal_graph.html', {'customer': customer, 'financial_data': financial_data})

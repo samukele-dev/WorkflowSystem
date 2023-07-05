@@ -7,8 +7,6 @@ class CustomerForm(forms.ModelForm):
         fields = ['first_name', 'last_name', 'date_of_birth']
 
 class FinancialDataForm(forms.ModelForm):
-    excel_file = forms.FileField()
-
     class Meta:
         model = FinancialData
-        fields = ['customer', 'date', 'income', 'expenditure']
+        fields = ['date', 'income', 'expenditure']

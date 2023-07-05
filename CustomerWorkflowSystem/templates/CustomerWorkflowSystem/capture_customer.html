@@ -10,9 +10,10 @@
 <body>
     <div class="container">
         <h1>Capture Customer Information</h1>
-        <form method="POST" enctype="multipart/form-data">
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %} {{ customer_form.as_p }} {{ financial_data_form.as_p }}
-            <input type="submit" value="Submit" class="btn btn-primary">
+            <input type="file" name="excel_file">
+            <input type="submit" value="Submit">
         </form>
     </div>
 </body>

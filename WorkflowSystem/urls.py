@@ -15,11 +15,11 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from workflow.views import capture_customer_info, render_temporal_graph
+from CustomerWorkflowSystem.views import capture_customer_info, render_temporal_graph
+
 
 urlpatterns = [
-    path('workflow/', include('workflow.urls')),
-    path('capture/', capture_customer_info, name='capture_customer'),
-    path('graph/<int:customer_id>/', render_temporal_graph, name='temporal_graph'),
+    path('admin/', admin.site.urls),
+    path('', include('CustomerWorkflowSystem.urls')),
 ]
 
