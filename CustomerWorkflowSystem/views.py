@@ -4,6 +4,8 @@ from .forms import UploadFileForm, CustomerForm, FinancialDataForm
 from .models import Customer, FinancialData
 import pandas as pd
 import matplotlib.pyplot as plt
+import calendar
+
 
 import os
 
@@ -29,6 +31,7 @@ def capture_customer_info(request):
             
             # Read the Excel file into a pandas DataFrame and save it to the database
             df = pd.read_excel(file_path)
+            
             for i, row in df.iterrows():
                 FinancialData.objects.create(
                     customer=customer,
@@ -56,10 +59,18 @@ def upload_file(request):
             if customer_form.is_valid():
                 customer = customer_form.save()
                 for i, row in data.iterrows():
-                    FinancialData.objects.create(customer=customer, date=row['date'], income=row['income'], expense=row['expense'])
+                    FinancialData.objects.create(
+                        customer=customer,
+                        month=row['Month'],
+                        income=row['Income'],
+                        expenses=row['Expenses']
+                    )
     else:
         form = UploadFileForm()
     return render(request, 'upload.html', {'form': form})
+
+
+# ...
 
 def render_temporal_graph(request, customer_id):
     customer = Customer.objects.get(id=customer_id)
@@ -68,12 +79,18 @@ def render_temporal_graph(request, customer_id):
     # Create a DataFrame from the FinancialData query
     df = pd.DataFrame(list(financial_data.values()))
 
-    # Convert 'month' to numeric format
-    df['month'] = pd.to_datetime(df['month'], format='%b', errors='coerce').dt.month
+    # Convert column names to lowercase and remove leading/trailing whitespaces
+    df.columns = df.columns.str.strip().str.lower()
+
+    # Convert 'month' column to categorical with correct ordering
+    month_order = list(calendar.month_abbr[1:])  # ['Jan', 'Feb', 'Mar', ..., 'Dec']
+    df['month'] = pd.Categorical(df['month'], categories=month_order, ordered=True)
 
     # Sort DataFrame by 'month'
     df.sort_values(by='month', inplace=True)
     
+    # Print column names
+    print(df.columns)
 
     # Plotting
     plt.figure(figsize=(10, 6))
