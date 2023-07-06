@@ -1,9 +1,9 @@
 ## Web-Based Workflow System
 This project is an implementation of a web-based workflow system using Django and Python 3.7. The goal is to build a system capable of handling user input via HTML forms, process the input, and present the result in a visual manner.
 
-** The application implements the following features: **
+**The application implements the following features:**
 
-** Customer Information **
+**Customer Information**
 The user enters customer information through a simple HTML form. The information captured includes:
 
 First name
@@ -12,13 +12,13 @@ Date of Birth
 Excel File Upload
 In addition to the customer information, the user uploads an Excel file containing the customer's financial income and expenses for the last 12 months.
 
-** Temporal Graph **
+**Temporal Graph**
 The system processes the uploaded Excel file and renders a temporal graph showing the customer's income and expenditure for the last 12 months.
 
-** Extensibility **
+**Extensibility**
 The design of the workflow system is made keeping extensibility in mind. The aim is to make the workflow easy to extend or change. The reasoning and architecture decisions are documented in the code as comments.
 
-** Restraints and Considerations **
+**Restraints and Considerations**
 The system is designed for a single user. There's no requirement for login or user management features.
 The data storage solution implemented in this system is simple. An SQLite database is used for storing customer and financial data.
 How to Run the Project
