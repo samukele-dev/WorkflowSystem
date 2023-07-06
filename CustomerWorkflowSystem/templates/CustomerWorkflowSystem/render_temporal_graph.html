@@ -1,4 +1,4 @@
-<!DOCTYPE html>{% load static %}
+<!DOCTYPE html> {% load static %}
 <html>
 
 <head>
@@ -13,10 +13,9 @@
                 <h1 class="text-center">Temporal Graph</h1>
                 <h2 class="text-center">Customer: {{ customer }}</h2>
                 <!-- Render the temporal graph using the financial_data -->
+                <img src="{% static 'img/temporal_graph.png' %}" alt="Temporal Graph">
             </div>
         </div>
-        <img src="{% static 'img/temporal_graph.png' %}" alt="Temporal Graph">
-
     </div>
 </body>
 
