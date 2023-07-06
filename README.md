@@ -29,7 +29,6 @@ https://github.com/samukele-dev/WorkflowSystem.git
 
 2.Set up a virtual environment and install the dependencies
 
-Copy code
 python3.7 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
