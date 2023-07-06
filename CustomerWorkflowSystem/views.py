@@ -8,6 +8,9 @@ import random
 from io import BytesIO
 from .forms import UploadFileForm, CustomerForm
 from .models import Customer, FinancialData
+from asgiref.sync import sync_to_async
+from threading import Thread
+
 
 BASE_DIR = settings.BASE_DIR
 
@@ -63,37 +66,51 @@ def capture_customer_info(request):
     return render(request, 'CustomerWorkflowSystem/capture_customer.html', {'customer_form': form, 'file_form': file_form})
 
 
+
+# ...
+
 def render_and_save_graph(customer):
-    financial_data = FinancialData.objects.filter(customer=customer)
-    df = pd.DataFrame(list(financial_data.values()))
-    df.columns = df.columns.str.strip().str.lower()
-    month_order = list(calendar.month_abbr[1:])
-    df['month'] = pd.Categorical(df['month'], categories=month_order, ordered=True)
-    df['income'] = df['income'].apply(clean_currency_value)
-    df['expenses'] = df['expenses'].apply(clean_currency_value)
-    df.sort_values(by='month', inplace=True)
+    def _render_and_save_graph_async():
+        import matplotlib
+        matplotlib.use('Agg')  # switch to a non-interactive backend
+        import matplotlib.pyplot as plt
 
-    plt.figure(figsize=(10, 6))
-    plt.bar(df['month'], df['income'], label='Income')
-    plt.bar(df['month'], df['expenses'], label='Expenses')
-    plt.xlabel('Month')
-    plt.ylabel('Amount')
-    plt.title('Income and Expenses Over Time')
-    plt.legend()
+        financial_data = FinancialData.objects.filter(customer=customer)
+        df = pd.DataFrame(list(financial_data.values()))
+        df.columns = df.columns.str.strip().str.lower()
+        month_order = list(calendar.month_abbr[1:])
+        df['month'] = pd.Categorical(df['month'], categories=month_order, ordered=True)
+        df['income'] = df['income'].apply(clean_currency_value)
+        df['expenses'] = df['expenses'].apply(clean_currency_value)
+        df.sort_values(by='month', inplace=True)
 
-    file_dir = os.path.join(BASE_DIR, 'CustomerWorkflowSystem', 'static', 'img')
-    file_path = os.path.join(file_dir, 'temporal_graph.png')
+        plt.figure(figsize=(10, 6))
+        plt.bar(df['month'], df['income'], label='Income')
+        plt.bar(df['month'], df['expenses'], label='Expenses')
+        plt.xlabel('Month')
+        plt.ylabel('Amount')
+        plt.title('Income and Expenses Over Time')
+        plt.legend()
 
-    if not os.path.exists(file_dir):
-        os.makedirs(file_dir)
+        file_dir = os.path.join(BASE_DIR, 'CustomerWorkflowSystem', 'static', 'img')
+        file_path = os.path.join(file_dir, 'temporal_graph.png')
 
-    with open(file_path, 'wb') as f:
-        plt.savefig(f, format='png')
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-    plt.close()
+        with open(file_path, 'wb') as f:
+            plt.savefig(f, format='png')
+
+        plt.close()
+
+    thread = Thread(target=_render_and_save_graph_async)
+    thread.start()
+    return thread # return thread
 
 
 def render_temporal_graph(request, customer_id):
     customer = Customer.objects.get(id=customer_id)
-    render_and_save_graph(customer)
+    thread = render_and_save_graph(customer)
+    thread.join()  # wait for the thread to complete
+
     return render(request, 'CustomerWorkflowSystem/render_temporal_graph.html', {'customer': customer})
