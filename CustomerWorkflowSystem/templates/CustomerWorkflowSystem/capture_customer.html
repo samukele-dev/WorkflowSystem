@@ -21,11 +21,14 @@
                     {% for field in customer_form %}
                     <div class="form-group">
                         <!-- Display the field's label -->
+                        {% if field.name == 'date_of_birth' %}
+                        <label for="{{ field.id_for_label }}">{{ field.label }} (YYYY-MM-DD)</label>
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:" " }}" placeholder="yyyy-mm-dd"> {% else %}
                         <label for="{{ field.id_for_label }}">{{ field.label }}</label>
                         <!-- Use a different input depending on the field type -->
                         {% if field.field.widget.input_type == 'textarea' %}
                         <textarea name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}">{{ field.value|default_if_none:"" }}</textarea> {% else %}
-                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:" " }}"> {% endif %}
+                        <input type="{{ field.field.widget.input_type }}" name="{{ field.name }}" class="form-control" id="{{ field.id_for_label }}" value="{{ field.value|default_if_none:" " }}"> {% endif %} {% endif %}
                     </div>
                     {% endfor %}
                     <h2>Upload Financial Data</h2>
